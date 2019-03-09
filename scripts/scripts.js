@@ -16,9 +16,9 @@ window.onload = () => {
         let s = date.getSeconds();
         h = h < 10 ? `0${h}` : h;
         m = m < 10 ? `0${m}` : m;
-        s = s < 10 ? `0${s}` : s;
+        //s = s < 10 ? `0${s}` : s;
 
-        CLOCK_HOLDER.innerHTML = `${h}:${m}:${s}`;
+        CLOCK_HOLDER.innerHTML = `${h}:${m}`;
         setTimeout(showTime, 1000);
     };
     //Getting timezones and offset from an external source
