@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,900" >
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/mediaqueries.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
     <script src="scripts/scripts.js"></script>
     <title>Clock</title>
@@ -13,6 +14,12 @@
 <body>
     <main>
         <section class="content">
+            <section class="day">
+                <figure class="icon-holder">
+                    <img class="icon" src="img/night.svg" />
+                </figure>            
+            </section>
+            <section class="greet"></section>
             <section class="clock"></section>
             <div class="custom-select">
                 <select class="timezones" name="options">

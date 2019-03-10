@@ -1,0 +1,61 @@
+@media only screen and (min-width: 768px) {
+    .icon-holder {
+        width: 240px;
+    }
+
+    .clock {
+        font-size: 150px;
+    }
+
+    .greet {
+        font-size: 36px;
+    }
+
+    .custom-select {
+        max-width: 430px;
+    }
+
+    .custom-select select {
+        font-size: 18px;
+    }
+}
+
+@media only screen and (min-width: 1366px) {
+    .icon-holder {
+        width: 280px;
+    }
+
+    .clock {
+        font-size: 150px;
+    }
+
+    .greet {
+        font-size: 36px;
+    }
+    
+    .custom-select {
+        max-width: 380px;
+    }
+
+    .custom-select select {
+        font-size: 16px;
+    }
+}
+
+@media only screen and (min-width: 1920px) {
+    .icon-holder {
+        width: 320px;
+    }
+
+    .clock {
+        font-size: 170px;
+    }
+
+    .greet {
+        font-size: 44px;
+    }
+
+    .custom-select {
+        max-width: 435px;
+    }
+}

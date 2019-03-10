@@ -2,7 +2,7 @@
     --morning: linear-gradient(180deg, #8bd9f8, #2776dd);
     --afternoon: linear-gradient(180deg, #ffec00, #f8bb00);
     --evening: linear-gradient(180deg, #ffc800, #e12300);
-    --night: linear-gradient(180deg, #2a0aac, #600a54);
+    --night: linear-gradient(180deg, #764797, #9594da);
 
 }
 
@@ -14,15 +14,34 @@ main {
     width: 100%;
     height: 100vh;
     background-color: #4a2e5e;
-    background-image: linear-gradient(180deg, #2a0aac, #600a54);
+    background-image: linear-gradient(180deg, #ffc800, #e12300);
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: bottom;
 }
 
+.icon-holder {
+    position: relative;
+    width: 150px;
+}
+
+.icon {
+    width: 100%;
+    height: auto;
+}
+
+.greet {
+    font-size: 25px;
+    margin-top: 30px;
+    font-weight: 700;
+}
+    
 .clock {
-    font-size: 120px;
+    font-size: 110px;
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -37,19 +56,13 @@ main {
 .custom-select {
     position: relative;
     display: block;
-    max-width: 100%;
-    min-width: 180px;
-    margin: 0 auto;
+    max-width: 290px;
+    margin: 20px auto;
 }
 
 .custom-select select {
-    border: 1px solid #b6b6b6;
     outline: none;
     background: white;
-    appearance: none;
-    border-radius: 0;
-    margin: 0;
-    display: block;
     width: 100%;
     cursor: pointer;
     padding: 15px 20px 15px 15px;

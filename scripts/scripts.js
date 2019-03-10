@@ -1,23 +1,86 @@
 window.onload = () => {
     const CLOCK_HOLDER = document.querySelector('.clock');
     const SELECT = document.querySelector('.timezones');
-    let chosenOffset;
+    const ICON = document.querySelector('.icon');
+    const GREET = document.querySelector('.greet');
+    const BG = document.querySelector('main');
 
+    let h = 0; //For testing purposes
+    let chosenOffset;
+    let changeAnimation = (hour) => {
+        //Late in the night 0:00 - 6:59
+        if(hour < 7) {
+            ICON.src = './img/night.svg';
+            TweenMax.set(BG, { backgroundImage: 'var(--night)' });
+        }
+        //Morning 7:00 - 11:59
+        if(hour >= 7 && hour < 12) {
+            ICON.src = './img/morning.svg';
+            TweenMax.set(BG, { backgroundImage: 'var(--morning)' });
+        }
+        //Afternoon 12:00 - 17:59
+        if(hour >= 12 && hour < 18) {
+            ICON.src = './img/afternoon.svg';
+            TweenMax.set(BG, { backgroundImage: 'var(--afternoon)' });
+        }
+        //Evening 18:00 23:59
+        if(hour >= 18 && hour <= 23) {
+            ICON.src = './img/evening.svg';
+            TweenMax.set(BG, { backgroundImage: 'var(--evening)' });
+        }
+    }
+    let greet = (hour, elem) => {
+        let greet;
+        if (hour >= 5 && hour < 12) {
+            greet = 'Good Morning, Martian.'
+        }
+
+        if(hour >= 12 && hour < 17) {
+            greet = 'Good Afternoon, Martian.';
+        }
+
+        if(hour >= 17 || hour < 5) {
+            greet = 'Good Evening, Martian.'
+        }   
+        elem.innerHTML = greet;
+        //SRC: https://get.momentumdash.help/hc/en-us/articles/115007629867-When-do-the-greetings-Good-morning-afternoon-and-evening-change-
+    }
     let showTime = () => {
         var date = new Date();
         // Converting to UTC
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-        
         // Adding offset from another timezones. *60 to turn input offset to minutes
         date.setMinutes(date.getMinutes() + (chosenOffset * 60));
-        
-        let h = date.getHours();
+        //TODO: TESTING comment line 55 and uncomment line 56, 59-61
+        h = date.getHours();
+        //h++; //Testing
         let m = date.getMinutes();
-        let s = date.getSeconds();
+        /*
+        if(h >= 24) {
+            h = 0;
+        }
+        */
         h = h < 10 ? `0${h}` : h;
         m = m < 10 ? `0${m}` : m;
-        //s = s < 10 ? `0${s}` : s;
+        
+        if(h < 7) {
+            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--night)', ease: Power4.easeInOut });
+        }
 
+        if(h >= 7 && h < 12) {
+            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--morning)', ease: Power4.easeInOut });
+        }
+
+        if(h >= 12 && h < 18) {
+            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--afternoon)', ease: Power4.easeInOut });
+        }
+        //Evening 18:00 23:59
+        if(h >= 18 && h <= 23) {
+            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--evening)', ease: Power4.easeInOut });
+        }
+
+        greet(h, GREET);
+        changeAnimation(h);
         CLOCK_HOLDER.innerHTML = `${h}:${m}`;
         setTimeout(showTime, 1000);
     };
@@ -26,17 +89,17 @@ window.onload = () => {
         .then(res => res.json())
         .then((options) => {
             let htmlString = '';
-            //Rewrite Data offset based on isdst
+            //Rewrite Data offset based on isdst, offset = offset - 1; Daylight Saving
             for(let data in options) {
                 if (options[data].isdst) { 
                     options[data].offset -= 1;
                 }
             }
-            //Sort the objects based on offset small to big
+            //Sort the objects based on offset from small to big
             options.sort((a, b) => a.offset - b.offset);
             for(let option in options) {
                 let value = options[option];
-                //Create list of options voor de select tag
+                //Create list of options for select tag
                 let optionHTML = `<option value="${value.offset}">${value.text}</option>`;
                 //Select Amsterdam timezone on default
                 if(value.abbr === 'WEDT') {
@@ -44,14 +107,21 @@ window.onload = () => {
                     optionHTML = `<option selected value="${value.offset}">${value.text}</option>`;
                 }
                 htmlString += optionHTML;
-            } 
+            }
             SELECT.innerHTML = htmlString;
-            showTime();
+            tl = new TimelineMax({ onStart: ()=> { showTime()} });
+              tl.from(GREET, 0.8, { autoAlpha: 0, x: -200, ease: Expo.easeOut})
+                .from(CLOCK_HOLDER, 0.8, { autoAlpha: 0, x: -200, ease: Expo.easeOut}, '-=0.5')
+                .from(ICON, 0.8, { autoAlpha: 0, y: -295, ease: Expo.easeOut}, '-=0.6')
+                .from(SELECT, 0.8, { autoAlpha: 0, y: 240, ease: Expo.easeOut}, '-=0.7');
         });
 
     SELECT.onchange = () => {
         //Get offset from input
         chosenOffset = Number(SELECT.value);
-        showTime();
+        tl.reverse().tweenTo(0, { onComplete: function() {
+            tl.restart(true);
+            } 
+        });
     }
 };
