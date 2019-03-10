@@ -4,6 +4,9 @@ window.onload = () => {
     const ICON = document.querySelector('.icon');
     const GREET = document.querySelector('.greet');
     const BG = document.querySelector('main');
+    const H = document.querySelector('.hour');
+    const M = document.querySelector('.min');
+    const DOTS = document.querySelector('.dots');
 
     let h = 0; //For testing purposes
     let chosenOffset;
@@ -31,8 +34,9 @@ window.onload = () => {
     }
     let greet = (hour, elem) => {
         let greet;
+
         if (hour >= 5 && hour < 12) {
-            greet = 'Good Morning, Martian.'
+            greet = 'Good Morning, Martian.';
         }
 
         if(hour >= 12 && hour < 17) {
@@ -40,10 +44,11 @@ window.onload = () => {
         }
 
         if(hour >= 17 || hour < 5) {
-            greet = 'Good Evening, Martian.'
-        }   
+            greet = 'Good Evening, Martian.';
+        }  
+
         elem.innerHTML = greet;
-        //SRC: https://get.momentumdash.help/hc/en-us/articles/115007629867-When-do-the-greetings-Good-morning-afternoon-and-evening-change-
+        //src: https://get.momentumdash.help/hc/en-us/articles/115007629867-When-do-the-greetings-Good-morning-afternoon-and-evening-change-
     }
     let showTime = () => {
         var date = new Date();
@@ -64,24 +69,25 @@ window.onload = () => {
         m = m < 10 ? `0${m}` : m;
         
         if(h < 7) {
-            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--night)', ease: Power4.easeInOut });
+            TweenMax.to(BG, 0.4, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--night)', ease: Power4.easeInOut });
         }
 
         if(h >= 7 && h < 12) {
-            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--morning)', ease: Power4.easeInOut });
+            TweenMax.to(BG, 0.4, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--morning)', ease: Power4.easeInOut });
         }
 
         if(h >= 12 && h < 18) {
-            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--afternoon)', ease: Power4.easeInOut });
+            TweenMax.to(BG, 0.4, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--afternoon)', ease: Power4.easeInOut });
         }
         //Evening 18:00 23:59
         if(h >= 18 && h <= 23) {
-            TweenMax.to(BG, 0.5, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--evening)', ease: Power4.easeInOut });
+            TweenMax.to(BG, 0.4, { autoAlpha: 1, scaleY: 1, backgroundImage: 'var(--evening)', ease: Power4.easeInOut });
         }
 
         greet(h, GREET);
         changeAnimation(h);
-        CLOCK_HOLDER.innerHTML = `${h}:${m}`;
+        H.innerHTML = h;
+        M.innerHTML = m;
         setTimeout(showTime, 1000);
     };
     //Getting timezones and offset from an external source
@@ -101,7 +107,7 @@ window.onload = () => {
                 let value = options[option];
                 //Create list of options for select tag
                 let optionHTML = `<option value="${value.offset}">${value.text}</option>`;
-                //Select Amsterdam timezone on default
+                //Select Amsterdam timezone as default value
                 if(value.abbr === 'WEDT') {
                     chosenOffset = value.offset;
                     optionHTML = `<option selected value="${value.offset}">${value.text}</option>`;
@@ -109,19 +115,21 @@ window.onload = () => {
                 htmlString += optionHTML;
             }
             SELECT.innerHTML = htmlString;
-            tl = new TimelineMax({ onStart: ()=> { showTime()} });
-              tl.from(GREET, 0.8, { autoAlpha: 0, x: -200, ease: Expo.easeOut})
-                .from(CLOCK_HOLDER, 0.8, { autoAlpha: 0, x: -200, ease: Expo.easeOut}, '-=0.5')
-                .from(ICON, 0.8, { autoAlpha: 0, y: -295, ease: Expo.easeOut}, '-=0.6')
-                .from(SELECT, 0.8, { autoAlpha: 0, y: 240, ease: Expo.easeOut}, '-=0.7');
+            
+            tl = new TimelineMax({ onStart: () => { showTime() }});
+              tl.from(GREET, 0.8, { autoAlpha: 0, x: -400, ease: Expo.easeOut, delay: 0.4 })
+                .from(CLOCK_HOLDER, 0.8, { autoAlpha: 0, x: -400, ease: Expo.easeOut }, '-=0.4')
+                .from(ICON, 0.9, { autoAlpha: 0, y: -295, ease: Expo.easeOut }, '-=0.6')
+                .from(SELECT, 0.9, { autoAlpha: 0, y: 280, ease: Expo.easeOut }, '-=0.7');
+
+            tlDots = new TimelineMax({ repeat: -1 });
+              tlDots.to(DOTS, 1, { opacity: 1, ease: Power1.easeNone })
+                    .to(DOTS, 1, { opacity: 0, ease: Power1.easeNone });
         });
 
     SELECT.onchange = () => {
         //Get offset from input
         chosenOffset = Number(SELECT.value);
-        tl.reverse().tweenTo(0, { onComplete: function() {
-            tl.restart(true);
-            } 
-        });
+        tl.reverse().tweenTo(0, { onComplete: () => { tl.restart(true); }});
     }
 };
